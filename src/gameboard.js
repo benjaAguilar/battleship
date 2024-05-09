@@ -6,6 +6,7 @@ export default class Gameboard {
     for (let i = 0; i < 10; i += 1) {
       this.board[i] = new Array(10).fill('w');
     }
+    this.allSunk = false;
     this.aircraft = new Ship(5, 'A');
     this.battleship = new Ship(4, 'B');
     this.crusier = new Ship(3, 'C');
@@ -13,12 +14,35 @@ export default class Gameboard {
     this.destroyers = [new Ship(1, 'D0'), new Ship(1, 'D1')];
   }
 
+  allShipsSunk() {
+    const ships = [
+      this.aircraft,
+      this.battleship,
+      this.crusier,
+      this.submarines[0],
+      this.submarines[1],
+      this.destroyers[0],
+      this.destroyers[1],
+    ];
+    let allSunk = true;
+    ships.forEach((ship) => {
+      if (!ship.sunk) allSunk = false;
+    });
+    return allSunk;
+  }
+
   receieveAttack(y, x) {
     let attack;
+    this.allSunk = this.allShipsSunk();
+    if (this.allSunk) return;
+
+    if (this.board[y][x] === 'X' || this.board[y][x] === 'miss') return;
+
     if (this.board[y][x] === 'w' || this.board[y][x] === 'o') {
       attack = 'miss';
     } else {
       attack = 'X';
+      this.board[y][x].hit();
     }
     this.board[y][x] = attack;
   }
