@@ -13,6 +13,56 @@ export default class Gameboard {
     this.destroyers = [new Ship(1, 'D0'), new Ship(1, 'D1')];
   }
 
+  placeShipY(ship, y, x) {
+    if (y > 9 || x > 9) return;
+    if (y + ship.length - 1 >= 10) return;
+
+    let hasSpace = true;
+    for (let i = 0; i < ship.length; i += 1) {
+      if (this.board[y + i][x] !== 'w') hasSpace = false;
+    }
+    if (!hasSpace) return;
+
+    for (let i = 0; i < ship.length; i += 1) {
+      this.board[y + i][x] = ship.id;
+    }
+
+    let ySubstract;
+    let addLength;
+    if (y === 0) {
+      // is on the top of the board
+      ySubstract = 0;
+      addLength = 1;
+    } else if (y + ship.length > 9) {
+      // is on the bottom of the board
+      ySubstract = 1;
+      addLength = 1;
+    } else {
+      ySubstract = 1;
+      addLength = 2;
+    }
+
+    // takes the space on x of the ship (sides)
+    if (x - 1 >= 0) {
+      for (let i = 0; i < ship.length + addLength; i += 1) {
+        this.board[y - ySubstract + i][x - 1] = 'o';
+      }
+    }
+    if (x + 1 <= 9) {
+      for (let i = 0; i < ship.length + addLength; i += 1) {
+        this.board[y - ySubstract + i][x + 1] = 'o';
+      }
+    }
+
+    // takes the space on y of the ship (up and down)
+    if (y - 1 >= 0) {
+      this.board[y - 1][x] = 'o';
+    }
+    if (y + ship.length <= 9) {
+      this.board[y + ship.length][x] = 'o';
+    }
+  }
+
   placeShipX(ship, y, x) {
     if (y > 9 || x > 9) return;
     if (x + ship.length - 1 >= 10) return;

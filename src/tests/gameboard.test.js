@@ -62,7 +62,33 @@ test('ship placement (!sticky) 1', () => {
 
 test('ship placement (!sticky) 2', () => {
   gameboard.placeShipX(gameboard.submarines[0], 1, 2);
-  console.log(gameboard.board);
   expect(gameboard.board[1][2]).toBe('w');
   expect(gameboard.board[1][3]).toBe('o');
+});
+
+// you can place ships on y position
+test('ship placement Y 1', () => {
+  gameboard.placeShipY(gameboard.crusier, 5, 5);
+  console.log(gameboard.board);
+  expect(gameboard.board[5][5]).toBe('C');
+  expect(gameboard.board[6][5]).toBe('C');
+  expect(gameboard.board[7][5]).toBe('C');
+});
+
+// cannot place outside
+test('ship placement Y 2', () => {
+  gameboard.placeShipY(gameboard.crusier, 9, 10);
+  expect(gameboard.board[9][10]).toBe(undefined);
+});
+
+// cannot place in to others
+test('ship placement Y (!in other ship)', () => {
+  gameboard.placeShipY(gameboard.destroyers[1], 5, 5);
+  expect(gameboard.board[5][5]).not.toBe('D1');
+});
+
+// cannot place stick to others
+test('ship placement Y (!sticky)', () => {
+  gameboard.placeShipY(gameboard.destroyers[1], 9, 4);
+  expect(gameboard.board[9][4]).not.toBe('D1');
 });
