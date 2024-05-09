@@ -13,6 +13,16 @@ export default class Gameboard {
     this.destroyers = [new Ship(1, 'D0'), new Ship(1, 'D1')];
   }
 
+  receieveAttack(y, x) {
+    let attack;
+    if (this.board[y][x] === 'w' || this.board[y][x] === 'o') {
+      attack = 'miss';
+    } else {
+      attack = 'X';
+    }
+    this.board[y][x] = attack;
+  }
+
   placeShipY(ship, y, x) {
     if (y > 9 || x > 9) return;
     if (y + ship.length - 1 >= 10) return;
