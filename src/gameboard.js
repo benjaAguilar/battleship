@@ -34,7 +34,7 @@ export default class Gameboard {
     if (!hasSpace) return;
 
     for (let i = 0; i < ship.length; i += 1) {
-      this.board[y + i][x] = ship.id;
+      this.board[y + i][x] = ship;
     }
 
     let ySubstract;
@@ -87,7 +87,7 @@ export default class Gameboard {
     const shipId = [];
     const ocuppiedSpace = ['o', 'o'];
     for (let i = 0; i < ship.length; i += 1) {
-      shipId.push(ship.id);
+      shipId.push(ship);
       ocuppiedSpace.push('o');
     }
     this.board[y].splice(x, ship.length, ...shipId);
