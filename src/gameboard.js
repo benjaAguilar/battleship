@@ -157,4 +157,28 @@ export default class Gameboard {
       this.board[y][x + ship.length] = 'o';
     }
   }
+
+  randomPos(ship) {
+    const verticalOrHorizontal = Math.floor(Math.random() * 2);
+    const y = Math.floor(Math.random() * 10);
+    const x = Math.floor(Math.random() * 10);
+
+    if (verticalOrHorizontal === 0) this.placeShipX(ship, y, x);
+    if (verticalOrHorizontal === 1) this.placeShipY(ship, y, x);
+
+    if (this.board[y][x] !== ship) this.randomPos(ship);
+  }
+
+  placeAllShips() {
+    const ships = [
+      this.aircraft,
+      this.battleship,
+      this.crusier,
+      this.submarines[0],
+      this.submarines[1],
+      this.destroyers[0],
+      this.destroyers[1],
+    ];
+    ships.forEach((ship) => this.randomPos(ship));
+  }
 }
