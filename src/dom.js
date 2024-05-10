@@ -1,5 +1,12 @@
+/* eslint-disable no-param-reassign */
 /* eslint-disable no-shadow */
 const mainDiv = document.querySelector('.main');
+
+function updateBox(y, x, gameboard, box) {
+  console.log(`${y} ${x}`);
+  gameboard.receieveAttack(y, x);
+  box.textContent = gameboard.board[y][x];
+}
 
 export default function createGrid(gameboard) {
   const container = document.createElement('div');
@@ -10,11 +17,11 @@ export default function createGrid(gameboard) {
     const box = document.createElement('div');
     box.addEventListener(
       'click',
-      ((y, x) => () => {
-        console.log(`${y} ${x}`);
-      })(y, x),
+      ((y, x, gameboard, box) => () => {
+        updateBox(y, x, gameboard, box);
+      })(y, x, gameboard, box),
     );
-    box.textContent = gameboard[y][x];
+    box.textContent = gameboard.board[y][x];
     box.classList.add('box');
     container.appendChild(box);
     if (x < 9) {
