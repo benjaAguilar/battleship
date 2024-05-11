@@ -1,29 +1,64 @@
 /* eslint-disable no-param-reassign */
-/* eslint-disable no-shadow */
-const mainDiv = document.querySelector('.main');
+// eslint-disable-next-line import/no-cycle
+import cpuPlay from './index';
 
+/* eslint-disable no-shadow */
+const playerGridContainer = document.querySelector('.player-container');
+const cpuGridContainer = document.querySelector('.cpu-container');
+
+// updates the CPU box
 function updateBox(y, x, gameboard, box) {
-  console.log(`${y} ${x}`);
-  gameboard.receieveAttack(y, x);
-  box.textContent = gameboard.board[y][x];
+  const attack = gameboard.receieveAttack(y, x);
+  if (attack === null) return null;
+  box.querySelector('p').textContent = gameboard.board[y][x];
+  if (gameboard.board[y][x] === 'X') box.classList.add('ship');
+  return attack;
 }
 
-export default function createGrid(gameboard) {
+// prints the player ships on screen
+function printShips(y, x, gameboard, box) {
+  const ship = gameboard.board[y][x];
+  if (typeof ship === 'object') box.classList.add('ship');
+
+  if (ship === 'X') {
+    box.classList.add('ship');
+    box.querySelector('p').textContent = ship;
+  }
+
+  if (ship === 'miss') box.querySelector('p').textContent = ship;
+}
+
+// creates the entire gird for player and cpu
+export default function createGrid(gameboard, player) {
   const container = document.createElement('div');
   container.classList.add('board');
+
   let x = 0;
   let y = 0;
+
   for (let i = 0; i < 100; i += 1) {
     const box = document.createElement('div');
-    box.addEventListener(
-      'click',
-      ((y, x, gameboard, box) => () => {
-        updateBox(y, x, gameboard, box);
-      })(y, x, gameboard, box),
-    );
-    box.textContent = gameboard.board[y][x];
+    const p = document.createElement('p');
+
+    // if the gameboard is from the cpu add an event listener for each box
+    // save the actual parameters for x and y
+    if (player === 'cpu') {
+      box.addEventListener(
+        'click',
+        ((y, x, gameboard, box) => () => {
+          const attack = updateBox(y, x, gameboard, box);
+          if (attack !== null) cpuPlay();
+        })(y, x, gameboard, box),
+      );
+    }
+
     box.classList.add('box');
+    box.appendChild(p);
     container.appendChild(box);
+
+    // if te gameboard is from the player show his ships
+    if (player === 'player') printShips(y, x, gameboard, box);
+
     if (x < 9) {
       x += 1;
     } else {
@@ -31,5 +66,15 @@ export default function createGrid(gameboard) {
       y += 1;
     }
   }
-  mainDiv.appendChild(container);
+  if (player === 'player') playerGridContainer.appendChild(container);
+  if (player === 'cpu') cpuGridContainer.appendChild(container);
+}
+
+// updates the entire player grid
+export function updatePlayerGrid(player) {
+  while (playerGridContainer.firstChild) {
+    playerGridContainer.removeChild(playerGridContainer.firstChild);
+  }
+
+  createGrid(player.gameboard, 'player');
 }
