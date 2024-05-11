@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 import Ship from './ship';
 
 export default class Gameboard {
@@ -34,9 +35,9 @@ export default class Gameboard {
   receieveAttack(y, x) {
     let attack;
     this.allSunk = this.allShipsSunk();
-    if (this.allSunk) return;
+    if (this.allSunk) return null;
 
-    if (this.board[y][x] === 'X' || this.board[y][x] === 'miss') return;
+    if (this.board[y][x] === 'X' || this.board[y][x] === 'miss') return null;
 
     if (this.board[y][x] === 'w' || this.board[y][x] === 'o') {
       attack = 'miss';
