@@ -151,3 +151,39 @@ label {
 .ship {
   background-color: #171717;
 }
+
+dialog {
+  background-color: #e5e5e5;
+  border: none;
+  font-family: pirates;
+  border-radius: 0.4rem;
+}
+
+::backdrop {
+  background: #17171780;
+}
+
+.gameover {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  justify-content: center;
+  background-color: #171717;
+  border-radius: 0.2rem;
+  padding: 2rem;
+}
+
+.gameover img {
+  grid-row: 1 / 3;
+}
+
+dialog p {
+  color: #e5e5e5;
+  font-size: 4rem;
+  justify-self: center;
+}
+
+#rematch {
+  grid-column: 2 / 3;
+  justify-self: end;
+}
