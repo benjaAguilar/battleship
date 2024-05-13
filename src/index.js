@@ -11,11 +11,27 @@ export function newGame(name) {
   player = new Player(name);
   CPU = new Player('CPU');
 
-  CPU.gameboard.placeAllShips();
-  player.gameboard.placeAllShips();
+  createGrid(
+    player.gameboard,
+    'player',
+    document.querySelector('#player-place'),
+  );
+}
 
-  createGrid(player.gameboard, 'player');
-  createGrid(CPU.gameboard, 'cpu');
+export function startGame() {
+  CPU.gameboard.placeAllShips();
+  createGrid(
+    player.gameboard,
+    'player',
+    document.querySelector('.player-container'),
+  );
+  createGrid(CPU.gameboard, 'cpu', document.querySelector('.cpu-container'));
+}
+
+export function showPlacement() {
+  player.deletePlacements();
+  player.gameboard.placeAllShips();
+  updateGrids(player, document.querySelector('#player-place'), 'player');
 }
 
 export function areSunk(objective) {

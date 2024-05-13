@@ -1,13 +1,19 @@
 /* eslint-disable no-param-reassign */
 // eslint-disable-next-line import/no-cycle
-import { areSunk, cpuPlay, newGame } from './index';
+import { areSunk, cpuPlay, newGame, showPlacement, startGame } from './index';
 
 /* eslint-disable no-shadow */
 const playerGridContainer = document.querySelector('.player-container');
 const cpuGridContainer = document.querySelector('.cpu-container');
 const menu = document.querySelector('.menu');
+const shipsPlacement = document.querySelector('.place-ships');
 const gameContent = document.querySelector('.game-content');
+
 const playBtn = document.querySelector('.play');
+const randomiseBtn = document.querySelector('#randomise');
+const ships = document.querySelectorAll('.draggable');
+const doneBtn = document.querySelector('#done');
+
 const modal = document.querySelector('.results');
 const wins = document.querySelector('.wins');
 const rematch = document.querySelector('#rematch');
@@ -27,13 +33,37 @@ playBtn.addEventListener('click', () => {
   newGame(name);
 
   menu.style.display = 'none';
+  shipsPlacement.style.display = 'grid';
+});
+
+randomiseBtn.addEventListener('click', () => {
+  showPlacement();
+  ships.forEach((ship) => {
+    ship.style.backgroundColor = '#17171790';
+  });
+});
+
+doneBtn.addEventListener('click', () => {
+  shipsPlacement.style.display = 'none';
   gameContent.style.display = 'grid';
+  startGame();
 });
 
 rematch.addEventListener('click', () => {
   playerGridContainer.removeChild(playerGridContainer.firstChild);
   cpuGridContainer.removeChild(cpuGridContainer.firstChild);
+
   newGame(document.querySelector('.p-name').textContent);
+
+  gameContent.style.display = 'none';
+  document
+    .querySelector('#player-place')
+    .removeChild(document.querySelector('#player-place').firstChild);
+  ships.forEach((ship) => {
+    ship.style.backgroundColor = '#171717';
+  });
+  shipsPlacement.style.display = 'grid';
+
   modal.close();
 });
 
@@ -52,7 +82,7 @@ function printShips(y, x, gameboard, box, player) {
 }
 
 // creates the entire gird for player and cpu
-export default function createGrid(gameboard, player) {
+export default function createGrid(gameboard, player, cont) {
   const container = document.createElement('div');
   container.classList.add('board');
 
@@ -90,8 +120,8 @@ export default function createGrid(gameboard, player) {
       y += 1;
     }
   }
-  if (player === 'player') playerGridContainer.appendChild(container);
-  if (player === 'cpu') cpuGridContainer.appendChild(container);
+  if (player === 'player') cont.appendChild(container);
+  if (player === 'cpu') cont.appendChild(container);
 }
 
 // updates the entire player grid
@@ -100,7 +130,7 @@ export function updateGrids(player, container, string) {
     container.removeChild(container.firstChild);
   }
 
-  createGrid(player.gameboard, string);
+  createGrid(player.gameboard, string, container);
 }
 
 export function endGame(winner) {

@@ -5,4 +5,8 @@ export default class Player {
     this.name = name;
     this.gameboard = new Gameboard();
   }
+
+  deletePlacements() {
+    this.gameboard = new Gameboard();
+  }
 }
