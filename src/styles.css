@@ -1,19 +1,153 @@
+@font-face {
+  font-family: pirates;
+  src: url(./fonts/JackPirateAlt_PERSONAL_USE_ONLY.ttf);
+}
+
+@font-face {
+  font-family: skullPirate;
+  src: url(./fonts/pirates_pw.ttf);
+}
+
+a {
+  text-decoration: none;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  width: 100vw;
+  background-image: url(./imgs/map.jpg);
+  background-size: cover;
+  backdrop-filter: blur(4px) brightness(0.9);
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #171717;
+  margin-bottom: 1rem;
+}
+
+h1 {
+  font-family: pirates;
+  font-size: 3rem;
+  font-weight: 100;
+  color: #e5e5e5;
+}
+
 .main {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 3rem;
+}
+
+/* MENU */
+.menu {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 3rem;
+  border-radius: 0.2rem;
+  background-color: #171717;
+  color: #e5e5e5;
+  font-family: pirates;
+  font-size: 2rem;
+}
+
+.logo {
+  width: 400px;
+}
+
+label {
+  align-self: flex-start;
+  margin-left: 50px;
+}
+
+#player-name {
+  margin-top: 0.2rem;
+  margin-bottom: 2rem;
+  border-radius: 0.2rem;
+  padding: 0.5rem;
+  border-bottom: 3px solid #e5e5e5;
+  color: #e5e5e5;
+  font-family: pirates;
+  font-size: 1.5rem;
+  background: transparent;
+}
+
+.play {
+  font-size: 3rem;
+  color: #b91c1c;
+  border-radius: 0.2rem;
+  border-bottom: 3px solid transparent;
+  transition: 200ms all ease-in-out;
+}
+
+.play:hover {
+  border-bottom: 3px solid #b91c1c;
+}
+
+/* IN GAME */
+.game-content {
+  display: none;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 70px 1fr;
+  column-gap: 4rem;
+  row-gap: 1rem;
+}
+
+.flag {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  gap: 1rem;
+  color: #e5e5e5;
+  background-color: #171717;
+  border-radius: 0.2rem;
+}
+
+.names {
+  font-family: pirates;
+  font-size: 2rem;
+}
+
+.skull {
+  font-family: skullPirate;
+  margin-top: 13px;
+  align-self: baseline;
+  font-size: 3rem;
 }
 
 .board {
   display: grid;
   width: fit-content;
   grid-template-columns: repeat(10, 40px);
-  border: 2px solid black;
+  border: 3px dashed #17171795;
+  box-sizing: border-box;
 }
 
 .box {
-  border: 1px solid #ccc;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+  border: 2px dashed #17171795;
   width: 40px;
   height: 40px;
+  font-family: skullPirate;
+  color: #b91c1c;
+  font-size: 1.5rem;
+}
+
+.box:hover {
+  cursor: crosshair;
+  background-color: #b91c1c90;
+}
+
+.ship {
+  background-color: #171717;
 }
