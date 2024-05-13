@@ -5,13 +5,36 @@ import cpuPlay from './index';
 /* eslint-disable no-shadow */
 const playerGridContainer = document.querySelector('.player-container');
 const cpuGridContainer = document.querySelector('.cpu-container');
+const menu = document.querySelector('.menu');
+const gameContent = document.querySelector('.game-content');
+const playBtn = document.querySelector('.play');
+
+playBtn.addEventListener('mouseover', () => {
+  playBtn.textContent = '~ Play ~';
+});
+playBtn.addEventListener('mouseout', () => {
+  playBtn.textContent = 'Play';
+});
+
+playBtn.addEventListener('click', () => {
+  const name = document.querySelector('#player-name').value;
+  if (name !== '') document.querySelector('.p-name').textContent = name;
+  menu.style.display = 'none';
+  gameContent.style.display = 'grid';
+});
 
 // updates the CPU box
 function updateBox(y, x, gameboard, box) {
   const attack = gameboard.receieveAttack(y, x);
   if (attack === null) return null;
-  box.querySelector('p').textContent = gameboard.board[y][x];
-  if (gameboard.board[y][x] === 'X') box.classList.add('ship');
+
+  if (gameboard.board[y][x] === 'miss')
+    box.querySelector('p').textContent = 'o';
+
+  if (gameboard.board[y][x] === 'X') {
+    box.querySelector('p').textContent = 'c';
+    box.classList.add('ship');
+  }
   return attack;
 }
 
@@ -22,10 +45,10 @@ function printShips(y, x, gameboard, box) {
 
   if (ship === 'X') {
     box.classList.add('ship');
-    box.querySelector('p').textContent = ship;
+    box.querySelector('p').textContent = 'c';
   }
 
-  if (ship === 'miss') box.querySelector('p').textContent = ship;
+  if (ship === 'miss') box.querySelector('p').textContent = 'o';
 }
 
 // creates the entire gird for player and cpu
