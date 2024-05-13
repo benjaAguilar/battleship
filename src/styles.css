@@ -126,6 +126,7 @@ label {
   display: grid;
   width: fit-content;
   grid-template-columns: repeat(10, 40px);
+  background-color: #fef3c790;
   border: 3px dashed #17171795;
   box-sizing: border-box;
 }
