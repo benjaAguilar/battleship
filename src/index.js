@@ -1,19 +1,39 @@
 /* eslint-disable import/no-cycle */
 // eslint-disable-next-line no-unused-vars
 import css from './styles.css';
-import createGrid, { updatePlayerGrid } from './dom';
+import createGrid, { endGame, updatePlayerGrid } from './dom';
 import Player from './players';
 
-const player = new Player('benja');
-const CPU = new Player('CPU');
+let player;
+let CPU;
 
-CPU.gameboard.placeAllShips();
-player.gameboard.placeAllShips();
+export function newGame(name) {
+  player = new Player(name);
+  CPU = new Player('CPU');
 
-createGrid(player.gameboard, 'player');
-createGrid(CPU.gameboard, 'cpu');
+  CPU.gameboard.placeAllShips();
+  player.gameboard.placeAllShips();
 
-export default function cpuPlay() {
+  createGrid(player.gameboard, 'player');
+  createGrid(CPU.gameboard, 'cpu');
+}
+
+export function areSunk(objective) {
+  let obj;
+  let winner;
+
+  if (objective === 'cpu') {
+    obj = CPU.gameboard.allShipsSunk();
+    winner = player.name;
+  } else {
+    obj = player.gameboard.allShipsSunk();
+    winner = CPU.name;
+  }
+
+  if (obj) endGame(winner);
+}
+
+export function cpuPlay() {
   let x;
   let y;
   do {
@@ -23,4 +43,5 @@ export default function cpuPlay() {
 
   player.gameboard.receieveAttack(y, x);
   updatePlayerGrid(player);
+  areSunk(player);
 }

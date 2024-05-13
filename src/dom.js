@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
 // eslint-disable-next-line import/no-cycle
-import cpuPlay from './index';
+import { areSunk, cpuPlay, newGame } from './index';
 
 /* eslint-disable no-shadow */
 const playerGridContainer = document.querySelector('.player-container');
@@ -8,6 +8,9 @@ const cpuGridContainer = document.querySelector('.cpu-container');
 const menu = document.querySelector('.menu');
 const gameContent = document.querySelector('.game-content');
 const playBtn = document.querySelector('.play');
+const modal = document.querySelector('.results');
+const wins = document.querySelector('.wins');
+const rematch = document.querySelector('#rematch');
 
 playBtn.addEventListener('mouseover', () => {
   playBtn.textContent = '~ Play ~';
@@ -17,10 +20,21 @@ playBtn.addEventListener('mouseout', () => {
 });
 
 playBtn.addEventListener('click', () => {
-  const name = document.querySelector('#player-name').value;
-  if (name !== '') document.querySelector('.p-name').textContent = name;
+  let name = document.querySelector('#player-name').value;
+  if (name === '') name = 'Player';
+
+  document.querySelector('.p-name').textContent = name;
+  newGame(name);
+
   menu.style.display = 'none';
   gameContent.style.display = 'grid';
+});
+
+rematch.addEventListener('click', () => {
+  playerGridContainer.removeChild(playerGridContainer.firstChild);
+  cpuGridContainer.removeChild(cpuGridContainer.firstChild);
+  newGame();
+  modal.close();
 });
 
 // updates the CPU box
@@ -70,9 +84,11 @@ export default function createGrid(gameboard, player) {
         'click',
         ((y, x, gameboard, box) => () => {
           const attack = updateBox(y, x, gameboard, box);
+          areSunk('cpu');
           if (attack !== null) cpuPlay();
         })(y, x, gameboard, box),
       );
+      printShips(y, x, gameboard, box);
     }
 
     box.classList.add('box');
@@ -100,4 +116,9 @@ export function updatePlayerGrid(player) {
   }
 
   createGrid(player.gameboard, 'player');
+}
+
+export function endGame(winner) {
+  modal.showModal();
+  wins.textContent = `${winner} Wins!`;
 }
