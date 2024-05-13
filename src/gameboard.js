@@ -32,36 +32,7 @@ export default class Gameboard {
     return allSunk;
   }
 
-  receieveAttack(y, x) {
-    let attack;
-    this.allSunk = this.allShipsSunk();
-    if (this.allSunk) return null;
-
-    if (this.board[y][x] === 'X' || this.board[y][x] === 'miss') return null;
-
-    if (this.board[y][x] === 'w' || this.board[y][x] === 'o') {
-      attack = 'miss';
-    } else {
-      attack = 'X';
-      this.board[y][x].hit();
-    }
-    this.board[y][x] = attack;
-  }
-
-  placeShipY(ship, y, x) {
-    if (y > 9 || x > 9) return;
-    if (y + ship.length - 1 >= 10) return;
-
-    let hasSpace = true;
-    for (let i = 0; i < ship.length; i += 1) {
-      if (this.board[y + i][x] !== 'w') hasSpace = false;
-    }
-    if (!hasSpace) return;
-
-    for (let i = 0; i < ship.length; i += 1) {
-      this.board[y + i][x] = ship;
-    }
-
+  takeSpaceY(ship, y, x, space) {
     let ySubstract;
     let addLength;
     if (y === 0) {
@@ -80,22 +51,111 @@ export default class Gameboard {
     // takes the space on x of the ship (sides)
     if (x - 1 >= 0) {
       for (let i = 0; i < ship.length + addLength; i += 1) {
-        this.board[y - ySubstract + i][x - 1] = 'o';
+        this.board[y - ySubstract + i][x - 1] = space;
       }
     }
     if (x + 1 <= 9) {
       for (let i = 0; i < ship.length + addLength; i += 1) {
-        this.board[y - ySubstract + i][x + 1] = 'o';
+        this.board[y - ySubstract + i][x + 1] = space;
       }
     }
 
     // takes the space on y of the ship (up and down)
     if (y - 1 >= 0) {
-      this.board[y - 1][x] = 'o';
+      this.board[y - 1][x] = space;
     }
     if (y + ship.length <= 9) {
-      this.board[y + ship.length][x] = 'o';
+      this.board[y + ship.length][x] = space;
     }
+  }
+
+  takeSpaceX(ship, y, x, space) {
+    let xSubstract;
+    let addLength;
+    if (x === 0) {
+      // is on the left of the board
+      xSubstract = 0;
+      addLength = 1;
+    } else if (x + ship.length > 9) {
+      // is on the right of the board
+      xSubstract = 1;
+      addLength = 1;
+    } else {
+      xSubstract = 1;
+      addLength = 2;
+    }
+
+    // takes the space on y of the ship (up and down)
+    if (y - 1 >= 0) {
+      for (let i = 0; i < ship.length + addLength; i += 1) {
+        this.board[y - 1][x - xSubstract + i] = space;
+      }
+    }
+    if (y + 1 <= 9) {
+      for (let i = 0; i < ship.length + addLength; i += 1) {
+        this.board[y + 1][x - xSubstract + i] = space;
+      }
+    }
+
+    // takes the space on x of the ship (sides)
+    if (x - 1 >= 0) {
+      this.board[y][x - 1] = space;
+    }
+    if (x + ship.length <= 9) {
+      this.board[y][x + ship.length] = space;
+    }
+  }
+
+  showSunked(ship) {
+    if (!ship.sunk) return;
+    const length = ship.length - 1;
+
+    if (
+      this.board[ship.y][ship.x + length] === ship ||
+      this.board[ship.y][ship.x + length] === 'X'
+    )
+      return this.takeSpaceX(ship, ship.y, ship.x, 'miss');
+
+    if (
+      this.board[ship.y + length][ship.x] === ship ||
+      this.board[ship.y + length][ship.x] === 'X'
+    );
+    return this.takeSpaceY(ship, ship.y, ship.x, 'miss');
+  }
+
+  receieveAttack(y, x) {
+    let attack;
+    this.allSunk = this.allShipsSunk();
+    if (this.allSunk) return null;
+
+    if (this.board[y][x] === 'X' || this.board[y][x] === 'miss') return null;
+
+    if (this.board[y][x] === 'w' || this.board[y][x] === 'o') {
+      attack = 'miss';
+    } else {
+      attack = 'X';
+      this.board[y][x].hit();
+      this.showSunked(this.board[y][x]);
+    }
+    this.board[y][x] = attack;
+  }
+
+  placeShipY(ship, y, x) {
+    if (y > 9 || x > 9) return;
+    if (y + ship.length - 1 >= 10) return;
+
+    let hasSpace = true;
+    for (let i = 0; i < ship.length; i += 1) {
+      if (this.board[y + i][x] !== 'w') hasSpace = false;
+    }
+    if (!hasSpace) return;
+
+    for (let i = 0; i < ship.length; i += 1) {
+      this.board[y + i][x] = ship;
+    }
+    ship.saveInitialPos(y, x);
+
+    this.takeSpaceY(ship, y, x, 'o');
   }
 
   placeShipX(ship, y, x) {
@@ -110,53 +170,13 @@ export default class Gameboard {
 
     // push the ship id the number of times of his length and spread on splice
     const shipId = [];
-    const ocuppiedSpace = ['o', 'o'];
     for (let i = 0; i < ship.length; i += 1) {
       shipId.push(ship);
-      ocuppiedSpace.push('o');
     }
     this.board[y].splice(x, ship.length, ...shipId);
+    ship.saveInitialPos(y, x);
 
-    let xSubstract;
-    let addLength;
-    if (x === 0) {
-      // is on the left of the board
-      xSubstract = 0;
-      addLength = 1;
-      ocuppiedSpace.pop();
-    } else if (x + ship.length > 9) {
-      // is on the right of the board
-      xSubstract = 1;
-      addLength = 1;
-      ocuppiedSpace.pop();
-    } else {
-      xSubstract = 1;
-      addLength = 2;
-    }
-
-    // takes the space on y of the ship (up and down)
-    if (y - 1 >= 0) {
-      this.board[y - 1].splice(
-        x - xSubstract,
-        ship.length + addLength,
-        ...ocuppiedSpace,
-      );
-    }
-    if (y + 1 <= 9) {
-      this.board[y + 1].splice(
-        x - xSubstract,
-        ship.length + addLength,
-        ...ocuppiedSpace,
-      );
-    }
-
-    // takes the space on x of the ship (sides)
-    if (x - 1 >= 0) {
-      this.board[y][x - 1] = 'o';
-    }
-    if (x + ship.length <= 9) {
-      this.board[y][x + ship.length] = 'o';
-    }
+    this.takeSpaceX(ship, y, x, 'o');
   }
 
   randomPos(ship) {

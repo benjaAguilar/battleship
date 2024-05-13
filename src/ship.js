@@ -4,6 +4,8 @@ export default class Ship {
     this.hits = 0;
     this.sunk = false;
     this.id = id;
+    this.x = null;
+    this.y = null;
   }
 
   hit() {
@@ -15,5 +17,10 @@ export default class Ship {
     if (this.length === this.hits) {
       this.sunk = true;
     }
+  }
+
+  saveInitialPos(y, x) {
+    this.y = y;
+    this.x = x;
   }
 }

@@ -33,29 +33,15 @@ playBtn.addEventListener('click', () => {
 rematch.addEventListener('click', () => {
   playerGridContainer.removeChild(playerGridContainer.firstChild);
   cpuGridContainer.removeChild(cpuGridContainer.firstChild);
-  newGame();
+  newGame(document.querySelector('.p-name').textContent);
   modal.close();
 });
 
-// updates the CPU box
-function updateBox(y, x, gameboard, box) {
-  const attack = gameboard.receieveAttack(y, x);
-  if (attack === null) return null;
-
-  if (gameboard.board[y][x] === 'miss')
-    box.querySelector('p').textContent = 'o';
-
-  if (gameboard.board[y][x] === 'X') {
-    box.querySelector('p').textContent = 'c';
-    box.classList.add('ship');
-  }
-  return attack;
-}
-
 // prints the player ships on screen
-function printShips(y, x, gameboard, box) {
+function printShips(y, x, gameboard, box, player) {
   const ship = gameboard.board[y][x];
-  if (typeof ship === 'object') box.classList.add('ship');
+  if (typeof ship === 'object' && player === 'player')
+    box.classList.add('ship');
 
   if (ship === 'X') {
     box.classList.add('ship');
@@ -76,14 +62,14 @@ export default function createGrid(gameboard, player) {
   for (let i = 0; i < 100; i += 1) {
     const box = document.createElement('div');
     const p = document.createElement('p');
-
+    box.appendChild(p);
     // if the gameboard is from the cpu add an event listener for each box
     // save the actual parameters for x and y
     if (player === 'cpu') {
       box.addEventListener(
         'click',
-        ((y, x, gameboard, box) => () => {
-          const attack = updateBox(y, x, gameboard, box);
+        ((y, x, gameboard) => () => {
+          const attack = gameboard.receieveAttack(y, x);
           areSunk('cpu');
           if (attack !== null) cpuPlay();
         })(y, x, gameboard, box),
@@ -92,11 +78,10 @@ export default function createGrid(gameboard, player) {
     }
 
     box.classList.add('box');
-    box.appendChild(p);
     container.appendChild(box);
 
     // if te gameboard is from the player show his ships
-    if (player === 'player') printShips(y, x, gameboard, box);
+    if (player === 'player') printShips(y, x, gameboard, box, 'player');
 
     if (x < 9) {
       x += 1;
@@ -110,12 +95,12 @@ export default function createGrid(gameboard, player) {
 }
 
 // updates the entire player grid
-export function updatePlayerGrid(player) {
-  while (playerGridContainer.firstChild) {
-    playerGridContainer.removeChild(playerGridContainer.firstChild);
+export function updateGrids(player, container, string) {
+  while (container.firstChild) {
+    container.removeChild(container.firstChild);
   }
 
-  createGrid(player.gameboard, 'player');
+  createGrid(player.gameboard, string);
 }
 
 export function endGame(winner) {

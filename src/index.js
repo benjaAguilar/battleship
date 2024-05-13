@@ -1,7 +1,7 @@
 /* eslint-disable import/no-cycle */
 // eslint-disable-next-line no-unused-vars
 import css from './styles.css';
-import createGrid, { endGame, updatePlayerGrid } from './dom';
+import createGrid, { endGame, updateGrids } from './dom';
 import Player from './players';
 
 let player;
@@ -42,6 +42,7 @@ export function cpuPlay() {
   } while (player.gameboard.receieveAttack(y, x) === null);
 
   player.gameboard.receieveAttack(y, x);
-  updatePlayerGrid(player);
+  updateGrids(CPU, document.querySelector('.cpu-container'), 'cpu');
+  updateGrids(player, document.querySelector('.player-container'), 'player');
   areSunk(player);
 }
