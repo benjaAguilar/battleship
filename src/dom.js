@@ -41,11 +41,13 @@ randomiseBtn.addEventListener('click', () => {
   ships.forEach((ship) => {
     ship.style.backgroundColor = '#17171790';
   });
+  doneBtn.style.display = 'block';
 });
 
 doneBtn.addEventListener('click', () => {
   shipsPlacement.style.display = 'none';
   gameContent.style.display = 'grid';
+  doneBtn.style.display = 'none';
   startGame();
 });
 

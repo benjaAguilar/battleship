@@ -1,8 +1,16 @@
 /* eslint-disable import/no-cycle */
 // eslint-disable-next-line no-unused-vars
 import css from './styles.css';
+// eslint-disable-next-line no-unused-vars
+import logo from './imgs/logo.png';
 import createGrid, { endGame, updateGrids } from './dom';
 import Player from './players';
+
+// eslint-disable-next-line no-multi-assign
+document.querySelectorAll('.logo').forEach((img) => {
+  // eslint-disable-next-line no-param-reassign
+  img.src = logo;
+});
 
 let player;
 let CPU;
